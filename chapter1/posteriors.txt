@@ -1,0 +1,35 @@
+P(C | Life Deal)P(Life Deal) = P(C and Life Deal) = P(Life Deal | C)P(C)
+
+P(C | Life Deal) = P(Life Deal | C) * P(C) / P(Life Deal)
+= 0.04 / 0.07
+= 0.5714
+
+P(S | Life Deal) = P(Life Deal | S) * P(S) / P(Life Deal)
+= 0.03 / 0.07
+= 0.4285
+
+P(Life Deal) = .8*.1*.5 + .2*.3*.5 = 0.07
+
+—
+
+P(C | Love Deal)P(Love Deal) = P(C and Love Deal) = P(Love Deal | C)P(C)
+P(C | Love Deal) = P(Love Deal | C)P(C) / P(Love Deal)
+= .1*.8*0.5 / 0.09 = 0.44
+
+P(S | Love Deal) = P(Love Deal | S)P(S) / P(Love Deal)
+= .5*.2*0.5 / 0.09 = 0.56
+
+
+
+Cornerstone
+519.740.9991
+
+Bandana Sofa
+32.5” door width, 82” door height
+
+31” DD
+
+Couch:
+Length = 78”
+Width  = 36”
+Height = 34”
