@@ -16,12 +16,12 @@ from tester import dump_classifier_and_data
 # Just take as many features as possible for now
 # Omitting email_address as it should be irrelevant to POI status 
 features_list = ['poi','salary','deferral_payments', 'total_payments',
-        'loan_advances', 'bonus', 'restricted_stock_deferred',
-        'deferred_income', 'total_stock_value', 'expenses',
-        'exercised_stock_options', 'other', 'long_term_incentive',
-        'restricted_stock', 'director_fees', 'to_messages', 
-        'from_poi_to_this_person', 'from_messages', 'from_this_person_to_poi',
-        'shared_receipt_with_poi'] 
+                 'loan_advances', 'bonus', 'restricted_stock_deferred',
+                 'deferred_income', 'total_stock_value', 'expenses',
+                 'exercised_stock_options', 'other', 'long_term_incentive',
+                 'restricted_stock', 'director_fees', 'to_messages', 
+                 'from_poi_to_this_person', 'from_messages', 'from_this_person_to_poi',
+                 'shared_receipt_with_poi'] 
 
 ### Load the dictionary containing the dataset
 with open("final_project_dataset.pkl", "r") as data_file:
@@ -50,26 +50,26 @@ stats = { f: (round(min(featureSetsNoNaN[f])),
               round(max(featureSetsNoNaN[f])), 
               round(np.mean(featureSetsNoNaN[f])),
               round(np.median(featureSetsNoNaN[f]))) for f in features_list }
-print "Feature stats: ", stats
+# print "Feature stats: ", stats
 
 # Determine %NaN per feature to see if imputed values would be representative/useful
 percentNaNs = { f: 100*(float(len(featureSets[f]))-len(featureSetsNoNaN[f]))/len(featureSets[f]) 
                 for f in featureSets }
-print "Percent NaNs: ", percentNaNs 
+# print "Percent NaNs: ", percentNaNs 
 
-# Lots of NaNs and median/mean don't match because we have skewed data. Probably
-# a better idea to map our features into [0,1] and set all NaNs to 0.5 which is
-# the mean for the uniform prior in the new space
+# Lots of NaNs and median/mean don't match because we have skewed data. Cannot
+# get a representative sample median/mean on this basis so we rescale to [0,1]
+# and take a uniform prior mean of 0.5.
 
 
 ### Task 3: Create new feature(s)
 ### Store to my_dataset for easy export below.
 
 minPerFeature = { f: stats[f][0] for f in features_list }
-print "Min per feature: ", minPerFeature
+# print "Min per feature: ", minPerFeature
 
 maxPerFeature = { f: stats[f][1] for f in features_list }
-print "Max per feature: ", maxPerFeature
+# print "Max per feature: ", maxPerFeature
 
 # MinMax Feature Scaling
 def newFeature(feature, value):
@@ -108,7 +108,41 @@ labels, features = targetFeatureSplit(data)
 
 # Provided to give you a starting point. Try a variety of classifiers.
 from sklearn.naive_bayes import GaussianNB
-clf = GaussianNB()
+# clf = GaussianNB()
+
+# This already does the trick
+from sklearn.tree import DecisionTreeClassifier
+# clf = DecisionTreeClassifier(min_samples_split = 2)
+
+# Decent precision but rubbish for recall 
+from sklearn.ensemble import RandomForestClassifier
+# clf = RandomForestClassifier()
+
+# Not better than other Decision Tree classifiers in this case
+from sklearn.ensemble import AdaBoostClassifier
+# clf = AdaBoostClassifier()
+
+# Best precision and recall so far: 0.32709, 0.33200. Accuracy was 0.81987.
+from sklearn.neighbors import KNeighborsClassifier
+clf = KNeighborsClassifier(n_neighbors = 1)
+
+# Wasn't useful in this example 
+# from sklearn.neighbors import RadiusNeighborsClassifier
+# clf = RadiusNeighborsClassifier(radius=7)
+
+# Wasn't useful in this example 
+# from sklearn.svm import SVC
+# clf = SVC(kernel='linear')
+
+# Try out some PCA
+from sklearn.pipeline import make_pipeline
+from sklearn.decomposition import RandomizedPCA
+# clf = make_pipeline(RandomizedPCA(), GaussianNB())
+# clf = make_pipeline(RandomizedPCA(), DecisionTreeClassifier())
+# clf = make_pipeline(RandomizedPCA(), RandomForestClassifier())
+# clf = make_pipeline(RandomizedPCA(), AdaBoostClassifier())
+# clf = make_pipeline(RandomizedPCA(), KNeighborsClassifier(n_neighbors = 1))
+
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
